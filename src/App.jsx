@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux'
 import './App.css'
 import authSlice, { login, logout } from './store/authSlice';
 import authService from './appwrite/auth';
-import {Container, Footer, Header, Login} from './components'
+import {Container, Footer, Header, Input, Login, PostCard, SignUp} from './components'
 function App() {
   const [loading,setLoading]=useState(true);
   const dispatch= useDispatch();
@@ -31,7 +31,7 @@ function App() {
         {loading ? (
           <div className='text-center'>Loading...</div>
         ):(
-          <div className='text-center'>Welcome to Haven <Login/> </div>
+          <div>  </div>
         )}
       </Container>
       <Footer/>
