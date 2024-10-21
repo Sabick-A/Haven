@@ -14,10 +14,12 @@ export class AuthServices{
 
     async createAccount({email,password,name}){
         try {
-            const currUser=await account.create(ID.unique(), email, password, name);
+            const currUser=await this.account.create(ID.unique(), email, password, name);
             if(currUser){
                 //calling the login method to authenticate the user;
+                console.log("done");
                 return this.login({email,password});
+                
             }else{
                 throw new Error("User creation failed");
             }

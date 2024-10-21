@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../store/authSlice";
 import authService from "../../appwrite/auth";
 function SignUp() {
     const { register, handleSubmit } = useForm();
@@ -26,37 +27,37 @@ function SignUp() {
     return (
         <form
             onSubmit={handleSubmit(formRegister)}
-            class="py-5  mx-auto  max-w-lg"
+            className="py-5  mx-auto  max-w-lg"
         >
-            <div class="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
-                <div class="max-w-lg mx-auto">
-                    <h2 class="text-center text-3xl font-extrabold text-gray-">
+            <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
+                <div className="max-w-lg mx-auto">
+                    <h2 className="text-center text-3xl font-extrabold text-gray-">
                         Create Account
                     </h2>
-                    <p class="mt-4 text-center text-gray-400">
+                    <p className="mt-4 text-center text-gray-400">
                         Sign Up to continue
                     </p>
-                    <div class="mt-5">
+                    <div className="mt-5">
                         <label
-                            class="font-semibold text-md text-gray-600 pb-1 block"
-                            for="name"
+                            className="font-semibold text-md text-gray-600 pb-1 block"
+                            htmlFor="name"
                         >
                             Name
                         </label>
                         <input
-                            class="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
+                            className="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
                             type="text"
                             id="name"
                             {...register("name", { required: true })}
                         />
                         <label
-                            class="font-semibold text-md text-gray-600 pb-1 block"
-                            for="login"
+                            className="font-semibold text-md text-gray-600 pb-1 block"
+                            htmlFor="login"
                         >
                             E-mail
                         </label>
                         <input
-                            class="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
+                            className="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
                             type="text"
                             id="login"
                             {...register("email", {
@@ -71,21 +72,21 @@ function SignUp() {
                             })}
                         />
                         <label
-                            class="font-semibold text-md text-gray-600 pb-1 block"
-                            for="password"
+                            className="font-semibold text-md text-gray-600 pb-1 block"
+                            htmlFor="password"
                         >
                             Password
                         </label>
                         <input
-                            class="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
+                            className="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
                             type="password"
                             id="password"
                             {...register("password", { required: true })}
                         />
                     </div>
-                    <div class="flex justify-center w-full items-center">
+                    <div className="flex justify-center w-full items-center">
                         <div>
-                            <button class="flex items-center justify-center py-2 px-20 bg-white hover:bg-gray-200 focus:ring-blue-500 focus:ring-offset-blue-200 text-gray-700 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
+                            <button className="flex items-center justify-center py-2 px-20 bg-white hover:bg-gray-200 focus:ring-blue-500 focus:ring-offset-blue-200 text-gray-700 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
                                 <svg
                                     viewBox="0 0 24 24"
                                     height="25"
@@ -136,13 +137,13 @@ function SignUp() {
                                         id="LxT-gk5MfRc1Gl_4XsNKba_xoyhGXWmHnqX_gr1"
                                     >
                                         <stop
-                                            stop-opacity=".2"
-                                            stop-color="#fff"
+                                            stopOpacity=".2"
+                                            stopColor="#fff"
                                             offset="0"
                                         ></stop>
                                         <stop
-                                            stop-opacity="0"
-                                            stop-color="#fff"
+                                            stopOpacity="0"
+                                            stopColor="#fff"
                                             offset="1"
                                         ></stop>
                                     </linearGradient>
@@ -160,27 +161,27 @@ function SignUp() {
                                         fill="#FFF"
                                     ></path>
                                 </svg>
-                                <span class="ml-2">Sign up with Google</span>
+                                <span className="ml-2">Sign up with Google</span>
                             </button>
                         </div>
                     </div>
-                    <div class="mt-5">
+                    <div className="mt-5">
                         <button
-                            class="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
+                            className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
                             type="submit"
                         >
                             Sign Up
                         </button>
                     </div>
-                    <div class="flex items-center justify-between mt-4">
-                        <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
+                    <div className="flex items-center justify-between mt-4">
+                        <span className="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
                         <Link
-                            class="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline"
+                            className="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline"
                             to="/login"
                         >
                             <p>Already have an account? Sign In</p>
                         </Link>
-                        <span class="w-1/5 border-b dark:border-gray-400 md:w-1/4"></span>
+                        <span className="w-1/5 border-b dark:border-gray-400 md:w-1/4"></span>
                     </div>
                 </div>
             </div>

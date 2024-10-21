@@ -2,16 +2,17 @@
 import { useEffect, useState } from 'react'
 import {useDispatch} from 'react-redux'
 import './App.css'
-import authSlice, { login, logout } from './store/authSlice';
+import  { login, logout } from './store/authSlice';
 import authService from './appwrite/auth';
-import {Container, Footer, Header, Input, Login, PostCard, SignUp} from './components'
+import {Container, Footer, Header} from './components'
+import { Outlet } from 'react-router-dom';
 function App() {
   const [loading,setLoading]=useState(true);
   const dispatch= useDispatch();
 
   useEffect(()=>{
-    authService.getCurrentUser().
-    then((userData)=>{
+    authService.getCurrentUser()
+    .then((userData)=>{
       if(userData){
         dispatch(login(userData));
       }else{
@@ -22,20 +23,21 @@ function App() {
   .finally(()=>{
     setLoading(false);
   });
+    
   },[]);
 
   return (
-    <>
+    <Container>
       <Header/>
-      <Container>
+      <>
         {loading ? (
           <div className='text-center'>Loading...</div>
         ):(
-          <div>  </div>
+          <div><Outlet/></div>
         )}
-      </Container>
+      </>
       <Footer/>
-    </>
+    </Container>
   )
 }
 

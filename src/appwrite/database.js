@@ -14,7 +14,7 @@ export class DatabaseService{
         this.database=new Databases(this.client);
     }
 
-    async createPost({title,slug,content,image,status,userId}){
+    async createPost({title,slug,content,image,status,userId,summary}){
         try {
             return await this.database.createDocument(
                 conf.appwriteDatabaseId,
@@ -26,6 +26,7 @@ export class DatabaseService{
                     image,
                     status,
                     userId,
+                    summary,
                 }
             )
         } catch (error) {
@@ -34,7 +35,7 @@ export class DatabaseService{
         }
     }
 
-    async updatePost(slug,{title,content,image,status}){
+    async updatePost(slug,{title,content,image,status,summary}){
         try {
             return await this.database.updateDocument(
                 conf.appwriteDatabaseId,
@@ -45,6 +46,7 @@ export class DatabaseService{
                     content,
                     image,
                     status,
+                    summary,
                 }
             )
         } catch (error) {

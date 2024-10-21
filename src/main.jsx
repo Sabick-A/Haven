@@ -5,13 +5,38 @@ import './index.css'
 import { Provider } from 'react-redux'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import store from './store/store.js'
+import { AuthLayout, Login,NewPost,PostCard,SignUp } from './components/index.js'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-        
+        {
+          path:"/",
+          element:<PostCard/>
+        },
+        {
+          path:"/login",
+          element:<Login/>,
+          children:[
+
+          ]
+        },
+        {
+          path:"/signup",
+          element:<SignUp/>,
+          children:[
+
+          ]
+        },
+        {
+          path:"/post",
+          element: <AuthLayout ><NewPost/></AuthLayout>,
+          children:[
+
+          ]
+        }
     ],
 },
 ])

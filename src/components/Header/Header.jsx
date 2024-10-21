@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import LogoutBtn from "./LogoutBtn";
 function Header() {
     const authStatus = useSelector((state) => state.auth.status);
-    const navigate=useNavigate()
+    const navigate = useNavigate();
 
     const navItems = [
         {
@@ -15,9 +15,9 @@ function Header() {
             svg: (
                 <svg
                     className="lucide lucide-rocket text-cyan-500 dark:text-cyan-400"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2"
                     stroke="#06B6D4"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -39,9 +39,9 @@ function Header() {
             svg: (
                 <svg
                     className="lucide lucide-newspaper text-blue-400 dark:text-blue-600"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2"
                     stroke="#60A5FA"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -63,9 +63,9 @@ function Header() {
             svg: (
                 <svg
                     className="lucide lucide-sticky-note text-yellow-400 dark:text-yellow-600"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2"
                     stroke="#FACC14"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -79,23 +79,23 @@ function Header() {
             ),
         },
         {
-            name: "Reviews",
-            slug: "/reviews",
-            active: true,
+            name: "New",
+            slug: "/post",
+            active: authStatus,
             svg: (
                 <svg
-                    className="lucide lucide-star text-orange-400 dark:text-orange-600"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    stroke="#FB923C"
-                    fill="#FB923C"
+                    className="stroke-teal-500 fill-none group-hover:fill-teal-800 group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
                     viewBox="0 0 24 24"
                     height="33"
                     width="33"
                     xmlns="http://www.w3.org/2000/svg"
                 >
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    <path
+                        strokeWidth="1.5"
+                        d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+                    ></path>
+                    <path strokeWidth="1.5" d="M8 12H16"></path>
+                    <path strokeWidth="1.5" d="M12 16V8"></path>
                 </svg>
             ),
         },
@@ -114,13 +114,17 @@ function Header() {
         },
     ];
     return (
-        <Container>
+        <>
             <nav className="flex w-full justify-between px-20 py-12 items-center bg-white">
                 <h1 className="text-2xl text-gray-800 font-bold">Haven</h1>
                 <div className="flex items-center gap-14 navItems">
                     {navItems.map((item) =>
                         item.active ? (
-                            <button onClick={()=>navigate(item.slug)} key={item.name} className="cursor-pointer bg-white relative inline-flex items-center justify-center gap-3  text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-[#F5F5F5] hover:text-[#FACC14] h-12 rounded-md px-5">
+                            <button
+                                onClick={() => navigate(item.slug)}
+                                key={item.name}
+                                className="cursor-pointer bg-white relative inline-flex items-center justify-center gap-3  text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-[#F5F5F5] hover:text-[#FACC14] h-12 rounded-md px-5"
+                            >
                                 {item.svg}
                                 {item.name}
                             </button>
@@ -128,22 +132,22 @@ function Header() {
                     )}
                 </div>
                 <div className="auth flex items-center gap-14">
-                    {authItems.map((item)=>
-                        item.active?(
-                            <button onClick={()=>navigate(item.slug)} key={item.name} className="w-[125px] bg-black h-[45px] my-4.5 flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-[#fff]">
+                    {authItems.map((item) =>
+                        item.active ? (
+                            <button
+                                onClick={() => navigate(item.slug)}
+                                key={item.name}
+                                className="w-[125px] bg-black h-[45px] my-4.5 flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-[#fff]"
+                            >
                                 {item.name}
                             </button>
-                        ):null
+                        ) : null
                     )}
 
-                    {
-                        authStatus&& (
-                            <LogoutBtn />
-                        )
-                    }
+                    {authStatus && <LogoutBtn />}
                 </div>
             </nav>
-        </Container>
+        </>
     );
 }
 
