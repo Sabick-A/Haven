@@ -7,4 +7,24 @@ import NewPost from "./Post/NewPost";
 import RTE from "./Elements/RTE";
 import Login from "./Auth/Login";
 import AuthLayout from "./Auth/AuthLayout";
-export { Header, NewPost, Footer, Container, SignUp,  Login, PostCard ,RTE,AuthLayout};
+import AllPosts from "./Post/AllPosts";
+import ShowPost from "./Post/ShowPost";
+import EditPost from "./Post/EditPost";
+import MyPosts from "./Post/MyPosts";
+import Page404 from "./404/Page404";
+export {
+    Header,
+    NewPost,
+    Footer,
+    Container,
+    SignUp,
+    Login,
+    PostCard,
+    RTE,
+    AuthLayout,
+    AllPosts,
+    ShowPost,
+    EditPost,
+    MyPosts,
+    Page404,
+};

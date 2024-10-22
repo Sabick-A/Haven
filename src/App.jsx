@@ -33,7 +33,7 @@ function App() {
         {loading ? (
           <div className='text-center'>Loading...</div>
         ):(
-          <div><Outlet/></div>
+          <div className='flex-grow'><Outlet/></div>
         )}
       </>
       <Footer/>

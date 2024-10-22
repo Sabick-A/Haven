@@ -33,8 +33,8 @@ function Header() {
             ),
         },
         {
-            name: "Articles",
-            slug: "/articles",
+            name: "My Articles",
+            slug: "/post",
             active: true,
             svg: (
                 <svg
@@ -57,8 +57,8 @@ function Header() {
             ),
         },
         {
-            name: "Notes",
-            slug: "/notes",
+            name: "Drafts",
+            slug: "/draft",
             active: true,
             svg: (
                 <svg
@@ -80,8 +80,8 @@ function Header() {
         },
         {
             name: "New",
-            slug: "/post",
-            active: authStatus,
+            slug: "/post/new",
+            active: true,
             svg: (
                 <svg
                     className="stroke-teal-500 fill-none group-hover:fill-teal-800 group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
@@ -115,7 +115,7 @@ function Header() {
     ];
     return (
         <>
-            <nav className="flex w-full justify-between px-20 py-12 items-center bg-white">
+            <nav className="flex w-full justify-between px-20 py-6 items-center bg-white">
                 <h1 className="text-2xl text-gray-800 font-bold">Haven</h1>
                 <div className="flex items-center gap-14 navItems">
                     {navItems.map((item) =>

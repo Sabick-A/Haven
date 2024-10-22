@@ -1,29 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import storageService from "../../appwrite/storage";
+import authService from "../../appwrite/auth";
 
 function PostCard({
     $id,
     title = "Title",
-    username = "username",
-    description,
-    image,
+    username = "",
+    summary,
+    featuredImage,
 }) {
     return (
-        <div className=" inline-block w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden  mx-10 my-10">
+        <div className=" inline-block w-full max-w-lg  bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden  mx-10 my-10">
             <div className="flex justify-between items-center px-6 py-4">
                 <div className="flex space-x-4">
                     {/* we can add pfp here */}
                     <div>
                         <svg
-                            className="rounded-full bg-yellow-300"
+                            className="rounded-full bg-gray-200 dark:bg-gray-600"
                             height="48"
                             width="48"
                             viewBox="0 0 48 48"
                             xmlns="http://www.w3.org/2000/svg"
                         >
                             <image
-                                href=""
+                                href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStCJpmc7wNF8Ti2Tuh_hcIRZUGOc23KBTx2A&s"
                                 height="48"
                                 width="48"
                                 preserveAspectRatio="xMidYMid slice"
@@ -105,14 +106,24 @@ function PostCard({
                     </select>
                 </div>
             </div>
+            {featuredImage && (
+                <div className="px-6 py-4 w-full">
+                    <img
+                        src={storageService.getFilePreview(featuredImage)}
+                        alt="Image Here"
+                        onError={(e) => console.error("Image failed to load:", e)}
+                    />
+                </div>
+            )}
             <Link to={`/post/${$id}`}>
-                { image && (<div className="px-6 py-4">
-                    <img src={storageService.getFilePreview(image)} alt="" />
-                </div>)}
-                
                 <div className="px-6 py-4">
                     <div className="text-sm text-gray-800 dark:text-gray-200">
-                        {description}
+                        {summary}
+                    </div>
+                </div>
+                <div className="px-6 py-4">
+                    <div className="text-sm text-gray-800 font-bold dark:text-gray-200">
+                        Click To Read More
                     </div>
                 </div>
             </Link>

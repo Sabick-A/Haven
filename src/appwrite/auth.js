@@ -47,6 +47,15 @@ export class AuthServices{
         }
     }
 
+    async getUserDetails(userId){
+        try {
+            return await this.account.get(userId);
+        } catch (error) {
+            console.log(`Appwrite serive :: getUSerDetails :: error`,error);
+            return null;
+        }
+    }
+
     async logout(){
         try {
             return await this.account.deleteSessions();

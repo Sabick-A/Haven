@@ -21,7 +21,7 @@ function RTE({ name, control, label, labelClass="", defaultValue = "" }) {
                         initialValue={defaultValue}
                         init={{
                             initialValue: defaultValue,
-                            height: 450,
+                            height: 600,
                             menubar: true,
                             plugins: [
                                 "image",
@@ -29,7 +29,6 @@ function RTE({ name, control, label, labelClass="", defaultValue = "" }) {
                                 "autolink",
                                 "lists",
                                 "link",
-                                "image",
                                 "charmap",
                                 "preview",
                                 "anchor",

@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect } from "react";
+//Rewrite the
+
+import React, { useCallback, useEffect, useState } from "react";
 import { RTE } from "../";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -6,48 +8,60 @@ import storageService from "../../appwrite/storage";
 import databaseService from "../../appwrite/database";
 import { useSelector } from "react-redux";
 function NewPost({ post }) {
-    const { register, handleSubmit, control, setValue, watch, getValues } =
-        useForm({
-            defaultValues: {
-                title: post?.title || "",
-                slug: post?.slug || "",
-                content: post?.content || "",
-                status: post?.status || "active",
-            },
-        });
+    const {
+        register,
+        handleSubmit,
+        control,
+        setValue,
+        watch,
+        getValues,
+        reset, // Add reset
+    } = useForm({
+        defaultValues: {
+            title: post?.title || "",
+            summary: post?.summary || "",
+            content: post?.content || "",
+            status: post?.status || "",
+            slug: post?.$id || "",
+            image :null,
+        },
+    });
     const userData = useSelector((state) => state.auth.userData);
     const navigate = useNavigate();
-
     const submit = async (data) => {
         if (post) {
-            const file = data.image[0]
-                ? await storageService.uploadFile(data.image[0])
-                : null;
+            const file = (data.image && data.image[0])? await storageService.uploadFile(data.image[0]): null;
             if (file) {
-                storageService.deleteFile(post.image);
+                storageService.deleteFile(post.featuredImage);
             }
+            console.log("test");
 
             const dbPost = await databaseService.updatePost(post.$id, {
                 ...data,
-                image: file ? file.$id : undefined,
+                featuredImage: file ? file.$id : post.featuredImage,
+                status: "active",
             });
 
             if (dbPost) {
-                navigate(`/posts/${dbPost.$id}`);
+                navigate(`/post/${dbPost.$id}`);
             }
         } else {
-            const file = data.image[0]
+            console.log(data.image[0]);
+            const file = data.image[0] 
                 ? await storageService.uploadFile(data.image[0])
                 : null;
 
+            console.log(file);
             const dbPost = await databaseService.createPost({
                 ...data,
-                image: file ? file.$id : undefined,
+                featuredImage: file ? file.$id : undefined,
+                username: userData.name,
                 userId: userData.$id,
+                status: "active",
             });
 
             if (dbPost) {
-                navigate(`/posts/${dbPost.$id}`);
+                navigate(`/post/${dbPost.$id}`);
             }
         }
     };
@@ -75,6 +89,35 @@ function NewPost({ post }) {
 
         return () => sub.unsubscribe();
     }, [watch, slugTransform, setValue]);
+
+    const [imageUrl, setImageUrl] = useState(null);
+
+    useEffect(() => {
+        if (post?.featuredImage) {
+            const url = storageService.getFilePreview(post.featuredImage);
+            if (url) {
+                setImageUrl(url);
+            } else {
+                console.log("Error while loading image");
+            }
+        }
+
+        reset({
+            title: post?.title || "",
+            summary: post?.summary || "",
+            content: post?.content || "",
+            status: post?.status || "",
+            slug: post?.$id || "",
+        });
+
+    }, [post,reset]);
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setImageUrl(URL.createObjectURL(file));
+        }
+    };
 
     return (
         <>
@@ -145,55 +188,58 @@ function NewPost({ post }) {
                                         {...register("summary", {
                                             required: true,
                                         })}
-                                    >
-                                    </textarea>
+                                    ></textarea>
                                 </div>
                                 <div className="w-full px-3 mb-8">
-                                    {post && (
-                                        <div className="w-full mb-5">
-                                            <img
-                                                src={storageService.getFilePreview(
-                                                    post.image
-                                                )}
-                                                alt={post.title}
-                                                className="rounded-lg"
-                                            />
-                                        </div>
-                                    )}
                                     <label
-                                        className="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-green-400 bg-white p-6 text-center"
+                                        className="mx-auto cursor-pointer flex w-full  items-center justify-center rounded-xl border-2 border-dashed border-green-400 bg-white p-2   text-center"
                                         htmlFor="dropzone-file"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-10 w-10 text-green-800"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                        <div className="left bg-gray-50 w-4/5 h-40 rounded-l overflow-hidden">
+                                            <img
+                                                src={imageUrl}
+                                                alt="No Image"
+                                                className="w-full h-full object-contain"
+                                                onError={(e) => {
+                                                    console.log(
+                                                        "Image failed to load:",
+                                                        e
+                                                    );
+                                                }}
                                             />
-                                        </svg>
+                                        </div>
 
-                                        <h2 className="mt-4 text-xl font-medium text-gray-700 tracking-wide">
-                                            Featured image
-                                        </h2>
-
-                                        <p className="mt-2 text-gray-500 tracking-wide">
-                                            Upload or drag & drop your file SVG,
-                                            PNG, JPG or GIF.{" "}
-                                        </p>
-
+                                        <div className="right w-1/5 flex flex-col items-center justify-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-10 w-10 text-green-800"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                                />
+                                            </svg>
+                                            <h2 className="block uppercase tracking-wide text-gray-700 text-sm font-bold my-2">
+                                                Upload
+                                            </h2>
+                                        </div>
                                         <input
                                             id="dropzone-file"
                                             type="file"
                                             className="hidden"
                                             accept="image/png, image/jpg, image/jpeg, image/gif"
-                                            {...register("image")}
+                                            onChange={(e) => {
+                                                handleFileChange(e);
+                                                setValue(
+                                                    "image",
+                                                    e.target.files
+                                                );
+                                            }}
                                         />
                                     </label>
                                 </div>
