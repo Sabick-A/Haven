@@ -1,7 +1,7 @@
 //Rewrite the
 
 import React, { useCallback, useEffect, useState } from "react";
-import { RTE } from "../";
+import { ErrorModal, RTE } from "../";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import storageService from "../../appwrite/storage";
@@ -15,7 +15,9 @@ function NewPost({ post }) {
         setValue,
         watch,
         getValues,
-        reset, // Add reset
+        formState: { errors } ,
+        reset,
+        // Add reset
     } = useForm({
         defaultValues: {
             title: post?.title || "",
@@ -23,46 +25,58 @@ function NewPost({ post }) {
             content: post?.content || "",
             status: post?.status || "",
             slug: post?.$id || "",
-            image :null,
+            image: null,
         },
     });
     const userData = useSelector((state) => state.auth.userData);
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
+    const closeModal = () => {
+        setError(null);
+    };
     const submit = async (data) => {
-        if (post) {
-            const file = (data.image && data.image[0])? await storageService.uploadFile(data.image[0]): null;
-            if (file) {
-                storageService.deleteFile(post.featuredImage);
+        try {
+            if (post) {
+                const file =
+                    data.image && data.image[0]
+                        ? await storageService.uploadFile(data.image[0])
+                        : null;
+                if (file) {
+                    storageService.deleteFile(post.featuredImage);
+                }
+                console.log("test");
+
+                const dbPost = await databaseService.updatePost(post.$id, {
+                    ...data,
+                    featuredImage: file ? file.$id : post.featuredImage,
+                    status: "active",
+                });
+
+                if (dbPost) {
+                    navigate(`/post/${dbPost.$id}`);
+                }
+            } else {
+                console.log(data.image[0]);
+                const file = data.image[0]
+                    ? await storageService.uploadFile(data.image[0])
+                    : null;
+
+                console.log(file);
+                const dbPost = await databaseService.createPost({
+                    ...data,
+                    featuredImage: file ? file.$id : undefined,
+                    username: userData.name,
+                    userId: userData.$id,
+                    status: "active",
+                });
+
+                if (dbPost) {
+                    navigate(`/post/${dbPost.$id}`);
+                }
             }
-            console.log("test");
-
-            const dbPost = await databaseService.updatePost(post.$id, {
-                ...data,
-                featuredImage: file ? file.$id : post.featuredImage,
-                status: "active",
-            });
-
-            if (dbPost) {
-                navigate(`/post/${dbPost.$id}`);
-            }
-        } else {
-            console.log(data.image[0]);
-            const file = data.image[0] 
-                ? await storageService.uploadFile(data.image[0])
-                : null;
-
-            console.log(file);
-            const dbPost = await databaseService.createPost({
-                ...data,
-                featuredImage: file ? file.$id : undefined,
-                username: userData.name,
-                userId: userData.$id,
-                status: "active",
-            });
-
-            if (dbPost) {
-                navigate(`/post/${dbPost.$id}`);
-            }
+        } catch (error) {
+            setError(error.message);
+            console.log(`NewPost :: submit :: error`, error);
         }
     };
 
@@ -99,6 +113,7 @@ function NewPost({ post }) {
                 setImageUrl(url);
             } else {
                 console.log("Error while loading image");
+                setError("Error while loading image");
             }
         }
 
@@ -109,8 +124,7 @@ function NewPost({ post }) {
             status: post?.status || "",
             slug: post?.$id || "",
         });
-
-    }, [post,reset]);
+    }, [post, reset]);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -121,6 +135,7 @@ function NewPost({ post }) {
 
     return (
         <>
+            {error && <ErrorModal {...{ error, closeModal }} />}
             <form className="bg-gray-100" onSubmit={handleSubmit(submit)}>
                 {/* <div className="header my-3 h-12 px-10 flex items-center justify-between">
                     <h1 className="font-medium text-2xl">NEW POST</h1>
@@ -137,14 +152,19 @@ function NewPost({ post }) {
                                         TITLE
                                     </label>
                                     <input
-                                        className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
+                                        className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d] required"
                                         type="text"
                                         id="title"
                                         {...register("title", {
-                                            required: true,
+                                            required: "Title is Required",
+                                            maxLength: {
+                                                value: 36,
+                                                message: "Title can only have at most 36 characters", // Custom error message for max length
+                                            },
                                         })}
                                         placeholder="Enter Your Title"
                                     />
+                                    {errors.title && <p className="text-red-600">{errors.title.message}</p>}
                                 </div>
                                 <div className="w-full md:w-full px-3 mb-6">
                                     <label
@@ -186,9 +206,10 @@ function NewPost({ post }) {
                                         className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
                                         type="text"
                                         {...register("summary", {
-                                            required: true,
+                                            required: "Summary is Required",
                                         })}
                                     ></textarea>
+                                    {errors.summary && <p className="text-red-600">{errors.summary.message}</p>}
                                 </div>
                                 <div className="w-full px-3 mb-8">
                                     <label

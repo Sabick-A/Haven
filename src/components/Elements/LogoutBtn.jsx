@@ -10,6 +10,9 @@ function LogoutBtn() {
     const logouthandler=()=>{
         authService.logout().then(()=>{
             dispatch(logout());
+        }).catch((error)=>{
+            console.log(error);
+            throw error;
         });
     }
     return (

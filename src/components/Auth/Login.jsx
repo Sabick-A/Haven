@@ -4,10 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import authService from "../../appwrite/auth";
 import { login as storeLogin } from "../../store/authSlice";
+import ErrorModal from "../Elements/ErrorModal";
 function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { register, handleSubmit } = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
     const [error, setError] = useState("");
 
     const formLogin = async (data) => {
@@ -25,64 +30,88 @@ function Login() {
             setError(error.message);
         }
     };
+
+    const closeModal = () => {
+        setError(null);
+    };
+
     return (
-        <form
-            onSubmit={handleSubmit(formLogin)}
-            className="py-5  mx-auto  max-w-lg"
-        >
-            <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
-                <div className="max-w-lg mx-auto">
-                    <h2 className="text-center text-3xl font-extrabold text-gray-">
-                        Welcome Back
-                    </h2>
-                    <p className="mt-4 text-center text-gray-400">
-                        Sign in to continue
-                    </p>
-                    <div className="mt-5">
-                        <label
-                            className="font-semibold text-md text-gray-600 pb-1 block"
-                            htmlFor="login"
-                        >
-                            E-mail
-                        </label>
-                        <input
-                            className="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
-                            type="text"
-                            id="login"
-                            {...register("email", {
-                                required: true,
-                                validate: {
-                                    matchPatern: (value) =>
-                                        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
-                                            value
-                                        ) ||
-                                        "Email address must be a valid address",
-                                },
-                            })}
-                        />
-                        <label
-                            className="font-semibold text-md text-gray-600 pb-1 block"
-                            htmlFor="password"
-                        >
-                            Password
-                        </label>
-                        <input
-                            className="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
-                            type="password"
-                            id="password"
-                            {...register("password", { required: true })}
-                        />
-                    </div>
-                    <div className="text-right mb-4">
-                        <Link
-                            className="text-xs font-display font-semibold text-gray-500 hover:text-gray-600 cursor-pointer"
-                            to="#"
-                        >
-                            Forgot Password?
-                        </Link>
-                    </div>
-                    <div className="flex justify-center w-full items-center">
-                        <div>
+        <>
+            {error && <ErrorModal {...{ error, closeModal }} />}
+            <form
+                onSubmit={handleSubmit(formLogin)}
+                className="py-5  mx-auto  max-w-lg"
+            >
+                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
+                    <div className="max-w-lg mx-auto">
+                        <h2 className="text-center text-3xl font-extrabold text-gray-">
+                            Welcome Back
+                        </h2>
+                        <p className="mt-4 text-center text-gray-400">
+                            Sign in to continue
+                        </p>
+                        <div className="mt-5">
+                            <label
+                                className="font-semibold text-md text-gray-600 pb-1 block"
+                                htmlFor="login"
+                            >
+                                E-mail
+                            </label>
+                            <input
+                                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
+                                type="text"
+                                id="login"
+                                {...register("email", {
+                                    required: true,
+                                    validate: {
+                                        matchPatern: (value) =>
+                                            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
+                                                value
+                                            ) ||
+                                            "Email address must be a valid address",
+                                    },
+                                })}
+                            />
+                            <label
+                                className="font-semibold text-md text-gray-600 pb-1 block"
+                                htmlFor="password"
+                            >
+                                Password
+                            </label>
+                            <input
+                                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-md w-full"
+                                type="password"
+                                id="password"
+                                {...register("password", {
+                                    required: true,
+                                    validate: {
+                                        minLength: (value) =>
+                                            value.length >= 8 ||
+                                            "Password must be at least 8 characters long", // Minimum length message
+                                    },
+                                })}
+                            />
+                            {errors.email && (
+                                <p className="text-red-500 text-xs mt-1 mb-8">
+                                    {errors.email.message}
+                                </p>
+                            )}
+                            {errors.password && (
+                                <p className="text-red-500 text-xs mt-1 mb-8">
+                                    {errors.password.message}
+                                </p>
+                            )}
+                        </div>
+                        <div className="text-right mb-4">
+                            <Link
+                                className="text-xs font-display font-semibold text-gray-500 hover:text-gray-600 cursor-pointer"
+                                to="#"
+                            >
+                                Forgot Password?
+                            </Link>
+                        </div>
+                        <div className="flex justify-center w-full items-center">
+                            {/* <div>
                             <button className="flex items-center justify-center py-2 px-20 bg-white hover:bg-gray-200 focus:ring-blue-500 focus:ring-offset-blue-200 text-gray-700 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
                                 <svg
                                     viewBox="0 0 24 24"
@@ -160,29 +189,31 @@ function Login() {
                                 </svg>
                                 <span className="ml-2">Sign in with Google</span>
                             </button>
+                        </div> */}
+                        </div>
+
+                        <div className="mt-5">
+                            <button
+                                className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
+                                type="submit"
+                            >
+                                Log in
+                            </button>
+                        </div>
+                        <div className="flex items-center justify-between mt-4">
+                            <span className="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
+                            <Link
+                                className="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline"
+                                to="/signup"
+                            >
+                                Create New Account
+                            </Link>
+                            <span className="w-1/5 border-b dark:border-gray-400 md:w-1/4"></span>
                         </div>
                     </div>
-                    <div className="mt-5">
-                        <button
-                            className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
-                            type="submit"
-                        >
-                            Log in
-                        </button>
-                    </div>
-                    <div className="flex items-center justify-between mt-4">
-                        <span className="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
-                        <Link
-                            className="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline"
-                            to="/signup"
-                        >
-                            Create New Account
-                        </Link>
-                        <span className="w-1/5 border-b dark:border-gray-400 md:w-1/4"></span>
-                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </>
     );
 }
 

@@ -1,5 +1,4 @@
 import React from "react";
-import { Container } from "../";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LogoutBtn from "./LogoutBtn";

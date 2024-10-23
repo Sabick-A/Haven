@@ -11,7 +11,7 @@ function PostCard({
     featuredImage,
 }) {
     return (
-        <div className=" inline-block w-full max-w-lg h-5/6 bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden  mx-10 my-10">
+        <div className=" inline-block w-full max-w-md h-5/6 bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden  mx-10 my-10">
             <div className="flex justify-between items-center px-6 py-4">
                 <div className="flex space-x-4">
                     {/* we can add pfp here */}
@@ -106,19 +106,20 @@ function PostCard({
                     </select>
                 </div>
             </div>
-            {featuredImage && (
-                <div className="px-6 py-4 w-full">
-                    <img
-                        src={storageService.getFilePreview(featuredImage)}
-                        alt="Image Here"
-                        className="w-full h-64 object-contain"
-                        onError={(e) =>
-                            console.error("Image failed to load:", e)
-                        }
-                    />
-                </div>
-            )}
+
             <Link to={`/post/${$id}`}>
+                {featuredImage && (
+                    <div className="px-6 py-4 w-full">
+                        <img
+                            src={storageService.getFilePreview(featuredImage)}
+                            alt="Image Here"
+                            className="w-full h-64 object-contain"
+                            onError={(e) =>
+                                console.error("Image failed to load:", e)
+                            }
+                        />
+                    </div>
+                )}
                 <div className="px-6 pb-3 h-20 overflow-hidden">
                     <div
                         className="text-sm text-gray-800 dark:text-gray-200  overflow-hidden text-ellipsis"
@@ -127,7 +128,8 @@ function PostCard({
                             WebkitLineClamp: 3,
                             WebkitBoxOrient: "vertical",
                         }}
-                        >{summary}
+                    >
+                        {summary}
                     </div>
                 </div>
                 <div className="px-6 pb-5 fle">

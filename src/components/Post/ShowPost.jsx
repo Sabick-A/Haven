@@ -12,6 +12,10 @@ function ShowPost() {
     const [isAuthor, setIsAuthor] = useState(false);
     const userData = useSelector((state) => state.auth.userData);
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
+    const closeModal = () => {
+        setError(null);
+    };
     useEffect(() => {
         databaseService
             .getPost(slug)
@@ -27,35 +31,39 @@ function ShowPost() {
                 setDate(date.toLocaleDateString("en-US", options));
 
                 const author = response.userId;
-                if(userData){
+                if (userData) {
                     setIsAuthor(author === userData.$id);
-                }else{
+                } else {
                     setIsAuthor(false);
                 }
-               
+
                 console.log(isAuthor);
             })
             .catch((error) => {
                 console.log(`ShowPost :: useEffect :: error`, error);
+                setError(error.message);
             });
-    }, [slug,userData]);
+    }, [slug, userData]);
 
-    const handleDelete = ()=>{
-        databaseService.deletePost(post.$id)
-        .then((status)=>{
-            if(status){
-                storageService.deleteFile(post.featuredImage);
-                navigate("/");
-            }else{
-                throw new Error("Unable to delete post");
-            }
-        })
-        .catch((error)=>{
-            console.log(`ShowPost :: handleDelete :: error`,error);
-        })
-    }
+    const handleDelete = () => {
+        databaseService
+            .deletePost(post.$id)
+            .then((status) => {
+                if (status) {
+                    storageService.deleteFile(post.featuredImage);
+                    navigate("/");
+                } else {
+                    throw new Error("Unable to delete post");
+                }
+            })
+            .catch((error) => {
+                console.log(`ShowPost :: handleDelete :: error`, error);
+                setError(error.message);
+            });
+    };
     return (
         <>
+            {error && <ErrorModal {...{ error, closeModal }} />}
             <main className="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900 antialiased">
                 <div className="flex justify-between px-4 mx-auto max-w-screen-6xl ">
                     <article className="mx-auto w-full max-w-6xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
@@ -114,7 +122,10 @@ function ShowPost() {
                                             </button>
                                         </Link>
 
-                                        <button onClick={handleDelete} class="flex justify-center items-center gap-2 w-28 h-12 cursor-pointer rounded-md shadow-2xl text-white font-semibold bg-gradient-to-r from-[#fb7185] via-[#e11d48] to-[#be123c] hover:shadow-xl hover:shadow-red-500 hover:scale-105 duration-300 hover:from-[#be123c] hover:to-[#fb7185]">
+                                        <button
+                                            onClick={handleDelete}
+                                            class="flex justify-center items-center gap-2 w-28 h-12 cursor-pointer rounded-md shadow-2xl text-white font-semibold bg-gradient-to-r from-[#fb7185] via-[#e11d48] to-[#be123c] hover:shadow-xl hover:shadow-red-500 hover:scale-105 duration-300 hover:from-[#be123c] hover:to-[#fb7185]"
+                                        >
                                             <svg
                                                 viewBox="0 0 15 15"
                                                 class="w-5 fill-white"
