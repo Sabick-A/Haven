@@ -21,7 +21,7 @@ Welcome to **Haven**, a social blogging platform where users can create, share, 
 - **Frontend**: React.js
 - **Backend**: Node.js and Express.js
 - **Database**: MongoDB
-- **Deployment**: Vercel (Deployed URL: [Haven](https://havenhere.netlify.app/))
+- **Deployment**: Netlify (Deployed URL: [Haven](https://havenhere.netlify.app/))
 - **Additional Tools**: HTML, CSS, JavaScript, REST API
 
 ## Usage
